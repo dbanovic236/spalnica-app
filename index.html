@@ -403,7 +403,7 @@
 
       <div class="bottom-bar">
         <button class="collect-btn" id="collectBtn">
-          <svg class="btn-icon"><use href="#star"/></svg>
+          <svg class="btn-icon"><use href="#star" fill="currentColor"/></svg>
           Zvezdica!
         </button>
       </div>
@@ -507,7 +507,7 @@
           ? dates[i].slice(5).replace('-', '/')
           : '';
         html += '<div class="' + cls + '">' +
-          '<svg><use href="#star"/></svg>' +
+          '<svg><use href="#star" fill="' + (earned ? '#fbbf24' : 'rgba(255,255,255,0.06)') + '"/></svg>' +
           (dateLabel ? '<span class="star-date">' + dateLabel + '</span>' : '') +
           '</div>';
       }
@@ -546,7 +546,7 @@
         btn.innerHTML = '<span style="font-size:18px">✓</span> Že zbrana';
       } else {
         btn.disabled = false;
-        btn.innerHTML = '<svg class="btn-icon"><use href="#star"/></svg> Zvezdica!';
+        btn.innerHTML = '<svg class="btn-icon"><use href="#star" fill="currentColor"/></svg> Zvezdica!';
       }
 
       // Meta theme
