@@ -15,14 +15,8 @@
     :root {
       --bg-tati: #0a0e1a;
       --bg-mami: #1a0a14;
-      --accent-tati: #60a5fa;
-      --accent-mami: #f472b6;
       --gold: #fbbf24;
       --gold-light: #fde68a;
-      --surface: rgba(255,255,255,0.04);
-      --surface-hover: rgba(255,255,255,0.08);
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
     }
 
     html, body {
@@ -44,10 +38,9 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      position: relative;
     }
 
-    /* ── Image Section ── */
+    /* ── Image Stage ── */
     .image-stage {
       flex: 1;
       position: relative;
@@ -64,21 +57,13 @@
       transition: opacity 0.6s ease;
     }
 
-    .image-stage img.switching {
-      opacity: 0;
-    }
+    .image-stage img.switching { opacity: 0; }
 
-    /* Gradient overlays */
     .image-stage::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        180deg,
-        transparent 55%,
-        rgba(0,0,0,0.5) 85%,
-        rgba(0,0,0,0.8) 100%
-      );
+      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.5) 85%, rgba(0,0,0,0.85) 100%);
       pointer-events: none;
     }
 
@@ -86,11 +71,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        0deg,
-        transparent 90%,
-        rgba(0,0,0,0.15) 100%
-      );
+      background: linear-gradient(0deg, transparent 90%, rgba(0,0,0,0.12) 100%);
       pointer-events: none;
     }
 
@@ -107,22 +88,22 @@
     .name-text {
       font-size: clamp(56px, 14vw, 96px);
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       line-height: 1;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
       transition: color 0.6s ease;
+      filter: drop-shadow(0 8px 28px rgba(0,0,0,0.55));
     }
 
-    .name-text.tati { color: #93c5fd; }
-    .name-text.mami { color: #f9a8d4; }
+    .name-text.tati { color: #bfdbfe; }
+    .name-text.mami { color: #fbcfe8; }
 
     .name-subtitle {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
-      letter-spacing: 4px;
+      letter-spacing: 6px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      margin-top: 4px;
+      color: rgba(255,255,255,0.42);
+      margin-top: 2px;
     }
 
     /* ── Date Pill ── */
@@ -131,31 +112,31 @@
       top: max(16px, env(safe-area-inset-top, 16px));
       right: 16px;
       z-index: 2;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: rgba(255,255,255,0.75);
       padding: 8px 16px;
       border-radius: 100px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     /* ── Bottom Sheet ── */
     .bottom-sheet {
       position: relative;
-      background: rgba(15, 15, 30, 0.95);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 20px 20px max(20px, env(safe-area-inset-bottom, 20px));
+      background: rgba(12, 12, 28, 0.96);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 22px 20px max(22px, env(safe-area-inset-bottom, 22px));
       z-index: 3;
-      transition: background 0.6s ease, border-color 0.6s ease;
+      transition: background 0.6s ease;
     }
 
     body.mami-theme .bottom-sheet {
-      background: rgba(30, 10, 25, 0.95);
+      background: rgba(26, 10, 22, 0.96);
     }
 
     /* ── Star Jar ── */
@@ -163,17 +144,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-bottom: 16px;
+      gap: 4px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
-      min-height: 36px;
+      min-height: 28px;
     }
 
-    .star-jar .mini-star {
-      font-size: 22px;
+    .star-jar svg {
+      width: 20px;
+      height: 20px;
       animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-      filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.4));
     }
+
+    .star-jar svg path { fill: #fbbf24; }
 
     @keyframes popIn {
       0% { transform: scale(0) rotate(-30deg); opacity: 0; }
@@ -181,8 +164,8 @@
     }
 
     .star-jar .empty-state {
-      color: rgba(255,255,255,0.15);
-      font-size: 14px;
+      color: rgba(255,255,255,0.12);
+      font-size: 13px;
       font-weight: 500;
     }
 
@@ -192,19 +175,20 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .star-counter .big-star {
-      font-size: 32px;
-      filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+      width: 36px;
+      height: 36px;
     }
 
+    .star-counter .big-star path { fill: #fbbf24; }
+
     .star-counter .count {
-      font-size: 42px;
+      font-size: 44px;
       font-weight: 700;
       color: var(--gold);
-      text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
       min-width: 50px;
       text-align: center;
       transition: transform 0.3s ease;
@@ -216,18 +200,18 @@
 
     @keyframes countBump {
       0% { transform: scale(1); }
-      40% { transform: scale(1.4); }
+      40% { transform: scale(1.45); }
       100% { transform: scale(1); }
     }
 
     .star-counter .streak-badge {
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       color: #0f0f1a;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 3px 10px;
+      padding: 4px 10px;
       border-radius: 100px;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     /* ── Collect Button ── */
@@ -236,42 +220,42 @@
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       color: #1a1400;
       border: none;
-      border-radius: 20px;
+      border-radius: 18px;
       padding: 16px;
       font-family: 'Fredoka', sans-serif;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 8px 30px rgba(251, 191, 36, 0.2);
+      gap: 8px;
+      box-shadow: 0 6px 24px rgba(251, 191, 36, 0.18);
       transition: all 0.2s ease;
       letter-spacing: 0.5px;
     }
 
     .collect-btn:active {
-      transform: scale(0.95);
-      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.15);
+      transform: scale(0.96);
+      box-shadow: 0 3px 12px rgba(251, 191, 36, 0.12);
     }
 
     .collect-btn:disabled {
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.18);
       box-shadow: none;
       cursor: default;
       transform: none;
     }
 
     .collect-btn .btn-star {
-      font-size: 26px;
+      width: 24px;
+      height: 24px;
     }
 
-    .collect-btn.collected {
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.3);
-    }
+    .collect-btn .btn-star path { fill: #1a1400; }
+
+    .collect-btn:disabled .btn-star path { fill: rgba(255,255,255,0.18); }
 
     /* ── Toast ── */
     .toast {
@@ -279,20 +263,20 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.8);
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       color: #fbbf24;
-      padding: 20px 32px;
+      padding: 22px 36px;
       border-radius: 24px;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       z-index: 100;
       pointer-events: none;
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       text-align: center;
-      border: 1px solid rgba(251, 191, 36, 0.2);
+      border: 1px solid rgba(251, 191, 36, 0.15);
     }
 
     .toast.show {
@@ -301,9 +285,9 @@
     }
 
     .toast .toast-emoji {
-      font-size: 48px;
+      font-size: 52px;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     /* ── Install Banner ── */
@@ -316,12 +300,12 @@
       color: white;
       text-align: center;
       padding: 14px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       z-index: 50;
       display: none;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
 
     .install-banner.show { display: block; }
@@ -335,6 +319,14 @@
   </style>
 </head>
 <body>
+
+  <!-- Hidden SVG star icon -->
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="star-icon" viewBox="0 0 24 24">
+      <path d="M12 2l2.8 6.6L22 9.5l-5 5.4 1.2 7.1-6.2-3.6-6.2 3.6L7 14.9l-5-5.4 7.2-.9L12 2z"/>
+    </symbol>
+  </svg>
+
   <div class="app">
     <div class="image-stage" id="imageStage">
       <img id="personImage" src="" alt="">
@@ -348,12 +340,12 @@
     <div class="bottom-sheet">
       <div class="star-jar" id="starJar"></div>
       <div class="star-counter">
-        <span class="big-star">⭐</span>
+        <svg class="big-star"><use href="#star-icon"/></svg>
         <span class="count" id="countDisplay">0</span>
         <span class="streak-badge" id="streakBadge" style="display:none">🔥 0</span>
       </div>
       <button class="collect-btn" id="collectBtn">
-        <span class="btn-star">⭐</span> Zvezdica!
+        <svg class="btn-star"><use href="#star-icon"/></svg> Zvezdica!
       </button>
     </div>
   </div>
@@ -364,23 +356,18 @@
   </div>
 
   <script>
-    // ── DATA ──
     const REFERENCE_DATE = '2026-07-13';
     const REFERENCE_IS_TATI = true;
     const MAX_VISIBLE_STARS = 20;
-
     const images = { tati: 'tati.jpg', mami: 'mami.jpg' };
-
     let deferredPrompt = null;
 
-    // ── LOGIC ──
     function getWhoseTurn() {
       const today = new Date().toISOString().split('T')[0];
       const ref = new Date(REFERENCE_DATE + 'T00:00:00');
       const now = new Date(today + 'T00:00:00');
       const diffDays = Math.floor((now - ref) / (1000 * 60 * 60 * 24));
-      const isTati = (diffDays % 2 === 0) === REFERENCE_IS_TATI;
-      return isTati ? 'tati' : 'mami';
+      return ((diffDays % 2 === 0) === REFERENCE_IS_TATI) ? 'tati' : 'mami';
     }
 
     function getStars() {
@@ -404,102 +391,66 @@
     }
 
     function canCollectStar() {
-      const today = new Date().toISOString().split('T')[0];
-      return !getStarDates().includes(today);
+      return !getStarDates().includes(new Date().toISOString().split('T')[0]);
     }
 
     function getStreak() {
       const dates = getStarDates().sort().reverse();
       if (dates.length === 0) return 0;
       const today = new Date().toISOString().split('T')[0];
-      // Check consecutive days backwards from today
       let streak = 0;
       const check = new Date(today + 'T00:00:00');
-      // If today isn't collected yet, start checking from yesterday
-      if (!dates.includes(today)) {
+      if (!dates.includes(today)) check.setDate(check.getDate() - 1);
+      while (dates.includes(check.toISOString().split('T')[0])) {
+        streak++;
         check.setDate(check.getDate() - 1);
-      }
-      while (true) {
-        const d = check.toISOString().split('T')[0];
-        if (dates.includes(d)) {
-          streak++;
-          check.setDate(check.getDate() - 1);
-        } else {
-          break;
-        }
       }
       return streak;
     }
 
     function collectStar() {
       if (!canCollectStar()) return false;
-      const today = new Date().toISOString().split('T')[0];
       setStars(getStars() + 1);
-      addStarDate(today);
+      addStarDate(new Date().toISOString().split('T')[0]);
       return true;
     }
 
-    // ── CONFETTI ──
     function spawnConfetti() {
-      const colors = [
-        '#fbbf24', '#f59e0b', '#fcd34d', '#fde68a',
-        '#60a5fa', '#93c5fd', '#f472b6', '#f9a8d4',
-        '#34d399', '#a78bfa', '#fb923c', '#ffd700',
-        '#ffffff', '#fbbf24'
-      ];
-      const shapes = ['circle', 'square', 'star'];
-
-      for (let i = 0; i < 60; i++) {
+      const colors = ['#fbbf24','#f59e0b','#fcd34d','#fde68a','#60a5fa','#93c5fd','#f472b6','#f9a8d4','#34d399','#a78bfa','#fb923c','#ffffff'];
+      for (let i = 0; i < 55; i++) {
         setTimeout(() => {
           const el = document.createElement('div');
           el.className = 'confetti-piece';
-          const size = 6 + Math.random() * 14;
-          const color = colors[Math.floor(Math.random() * colors.length)];
-          const shape = shapes[Math.floor(Math.random() * shapes.length)];
-          const left = Math.random() * 100;
-          const delay = Math.random() * 0.5;
-          const duration = 2 + Math.random() * 3;
-
-          let borderRadius = '50%';
-          if (shape === 'square') borderRadius = '2px';
-          if (shape === 'star') borderRadius = '1px';
-
-          el.style.cssText = `
-            top: -20px;
-            left: ${left}%;
-            width: ${size}px;
-            height: ${size}px;
-            background: ${color};
-            border-radius: ${borderRadius};
-            animation: confettiFall ${duration}s ease-in ${delay}s forwards;
-            transform: rotate(${Math.random() * 360}deg);
-          `;
+          const size = 6 + Math.random() * 12;
+          el.style.cssText = [
+            'top:-20px', 'left:' + Math.random() * 100 + '%',
+            'width:' + size + 'px', 'height:' + size + 'px',
+            'background:' + colors[Math.floor(Math.random() * colors.length)],
+            'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
+            'animation:confettiFall ' + (2 + Math.random() * 3) + 's ease-in ' + (Math.random() * 0.5) + 's forwards',
+            'transform:rotate(' + (Math.random() * 360) + 'deg)'
+          ].join(';');
           document.body.appendChild(el);
-          setTimeout(() => el.remove(), (duration + delay) * 1000 + 500);
-        }, i * 25);
+          setTimeout(() => el.remove(), 4000);
+        }, i * 22);
       }
     }
 
-    // ── TOAST ──
     function showToast(emoji, text) {
-      const toast = document.getElementById('toast');
-      toast.innerHTML = `<span class="toast-emoji">${emoji}</span>${text}`;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+      const t = document.getElementById('toast');
+      t.innerHTML = '<span class="toast-emoji">' + emoji + '</span>' + text;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // ── RENDER ──
     function render() {
       const turn = getWhoseTurn();
       const stars = getStars();
-      const today = new Date().toISOString().split('T')[0];
       const streak = getStreak();
       const collected = !canCollectStar();
 
-      // Theme
       document.body.className = turn === 'mami' ? 'mami-theme' : '';
 
-      // Image
       const img = document.getElementById('personImage');
       if (img.dataset.current !== turn) {
         img.classList.add('switching');
@@ -513,87 +464,74 @@
         img.dataset.current = turn;
       }
 
-      // Name
       const nameEl = document.getElementById('nameText');
       nameEl.className = 'name-text ' + turn;
       nameEl.textContent = turn === 'tati' ? 'Tati' : 'Mami';
 
-      // Date
       const days = ['Nedelja','Ponedeljek','Torek','Sreda','Četrtek','Petek','Sobota'];
       const months = ['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec'];
       const d = new Date();
-      document.getElementById('datePill').textContent =
-        days[d.getDay()] + ', ' + d.getDate() + '. ' + months[d.getMonth()] + '.';
+      document.getElementById('datePill').textContent = days[d.getDay()] + ', ' + d.getDate() + '. ' + months[d.getMonth()] + '.';
 
-      // Star jar (visual stars)
       const jar = document.getElementById('starJar');
       const visible = Math.min(stars, MAX_VISIBLE_STARS);
       if (visible > 0) {
         jar.innerHTML = Array.from({length: visible}, (_, i) =>
-          `<span class="mini-star" style="animation-delay:${i * 0.03}s">⭐</span>`
+          '<svg style="animation-delay:' + (i * 0.03) + 's"><use href="#star-icon"/></svg>'
         ).join('');
         if (stars > MAX_VISIBLE_STARS) {
-          jar.innerHTML += `<span style="color:rgba(255,255,255,0.3);font-size:14px;font-weight:600">+${stars - MAX_VISIBLE_STARS}</span>`;
+          jar.innerHTML += '<span style="color:rgba(255,255,255,0.25);font-size:13px;font-weight:600">+' + (stars - MAX_VISIBLE_STARS) + '</span>';
         }
       } else {
         jar.innerHTML = '<span class="empty-state">Še ni zvezdic. Pojdi lepo spat!</span>';
       }
 
-      // Count
-      const countEl = document.getElementById('countDisplay');
-      countEl.textContent = stars;
+      document.getElementById('countDisplay').textContent = stars;
 
-      // Streak
-      const streakBadge = document.getElementById('streakBadge');
+      const badge = document.getElementById('streakBadge');
       if (streak >= 3) {
-        streakBadge.style.display = 'inline';
-        streakBadge.textContent = '🔥 ' + streak;
+        badge.style.display = 'inline';
+        badge.textContent = '🔥 ' + streak;
       } else {
-        streakBadge.style.display = 'none';
+        badge.style.display = 'none';
       }
 
-      // Button
       const btn = document.getElementById('collectBtn');
       if (collected) {
         btn.disabled = true;
-        btn.innerHTML = '<span style="font-size:22px">✅</span> Že zbrana zvezdica';
+        btn.innerHTML = '<span style="font-size:20px">✅</span> Že zbrana zvezdica';
       } else {
         btn.disabled = false;
-        btn.innerHTML = '<span class="btn-star">⭐</span> Zvezdica!';
+        btn.innerHTML = '<svg class="btn-star"><use href="#star-icon"/></svg> Zvezdica!';
       }
 
-      // Theme color
-      document.querySelector('meta[name="theme-color"]').content =
-        turn === 'tati' ? '#0a0e1a' : '#1a0a14';
+      document.querySelector('meta[name="theme-color"]').content = turn === 'tati' ? '#0a0e1a' : '#1a0a14';
     }
 
     function collectAndRender() {
       if (!collectStar()) return;
-      const countEl = document.getElementById('countDisplay');
-      countEl.classList.add('bump');
-      setTimeout(() => countEl.classList.remove('bump'), 400);
+      document.getElementById('countDisplay').classList.add('bump');
+      setTimeout(() => document.getElementById('countDisplay').classList.remove('bump'), 400);
       render();
       spawnConfetti();
       const streak = getStreak();
-      const msgs = [
-        ['🌟', 'Bravo! Zvezdica je tvoja!'],
-        ['🎉', 'Odlično! Kar tako naprej!'],
-        ['💫', 'Super! Si pravi zvezdni junak!'],
-        ['✨', 'Čestitke! Nova zvezdica!'],
-        ['🏆', 'Fenomenalno! Zvezde se nabirajo!'],
-      ];
       if (streak >= 7) {
         showToast('👑', 'Cel teden! Kralj zvezdic!');
       } else {
+        const msgs = [
+          ['🌟', 'Bravo! Zvezdica je tvoja!'],
+          ['🎉', 'Odlično! Kar tako naprej!'],
+          ['💫', 'Super! Si pravi zvezdni junak!'],
+          ['✨', 'Čestitke! Nova zvezdica!'],
+          ['🏆', 'Fenomenalno! Zvezde se nabirajo!']
+        ];
         const m = msgs[Math.floor(Math.random() * msgs.length)];
         showToast(m[0], m[1]);
       }
     }
 
-    // ── EVENTS ──
     document.getElementById('collectBtn').addEventListener('click', collectAndRender);
 
-    // ── PWA ──
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -604,41 +542,26 @@
     function installApp() {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((r) => {
-        if (r.outcome === 'accepted') {
-          document.getElementById('installBanner').classList.remove('show');
-        }
+      deferredPrompt.userChoice.then(r => {
+        if (r.outcome === 'accepted') document.getElementById('installBanner').classList.remove('show');
         deferredPrompt = null;
       });
     }
     window.installApp = installApp;
 
-    // ── MIDNIGHT REFRESH ──
     function scheduleMidnight() {
       const now = new Date();
       const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-      const ms = midnight.getTime() - now.getTime();
-      setTimeout(() => { render(); scheduleMidnight(); }, ms + 500);
+      setTimeout(() => { render(); scheduleMidnight(); }, midnight.getTime() - now.getTime() + 500);
     }
 
-    // ── INIT ──
     render();
     scheduleMidnight();
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-
-    // Add confetti keyframes
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-      @keyframes confettiFall {
-        0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
-        70%  { opacity: 1; }
-        100% { transform: translateY(105vh) rotate(${360 + Math.random() * 720}deg) scale(0.4); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(styleSheet);
+    const ss = document.createElement('style');
+    ss.textContent = '@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}70%{opacity:1}100%{transform:translateY(105vh) rotate(720deg) scale(0.4);opacity:0}}';
+    document.head.appendChild(ss);
   </script>
 </body>
 </html>
