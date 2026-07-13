@@ -38,7 +38,7 @@
 
     /* ── Photo Section ── */
     .photo-section {
-      flex: 0 0 50%;
+      flex: 0 0 42%;
       position: relative;
       overflow: hidden;
     }
@@ -57,31 +57,30 @@
       inset: 0;
       background: linear-gradient(180deg,
         rgba(0,0,0,0.05) 0%,
-        transparent 20%,
-        transparent 60%,
-        rgba(0,0,0,0.55) 90%,
-        rgba(0,0,0,0.9) 100%
+        transparent 30%,
+        transparent 65%,
+        rgba(0,0,0,0.35) 85%,
+        rgba(0,0,0,0.85) 100%
       );
       pointer-events: none;
       z-index: 1;
     }
 
-    .name-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 40px 24px 24px;
+    /* ── Name Banner ── */
+    .name-banner {
+      padding: 16px 24px 12px;
       text-align: center;
-      z-index: 2;
+      background: #0d0d1a;
+      transition: background 0.7s ease, color 0.7s ease;
     }
 
+    body.mami-theme .name-banner { background: #1a0d16; }
+
     .name-text {
-      font-size: clamp(52px, 13vw, 88px);
+      font-size: clamp(42px, 11vw, 64px);
       font-weight: 700;
       line-height: 1;
       letter-spacing: -0.5px;
-      filter: drop-shadow(0 8px 32px rgba(0,0,0,0.6));
       transition: color 0.7s ease;
     }
 
@@ -91,9 +90,7 @@
     .name-label {
       font-size: 12px;
       font-weight: 500;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.35);
       margin-top: 4px;
     }
 
@@ -381,10 +378,12 @@
       <img id="personImage" src="" alt="">
       <div class="photo-gradient"></div>
       <div class="date-pill" id="datePill"></div>
-      <div class="name-overlay">
-        <div class="name-text" id="nameText"></div>
-        <div class="name-label">gre danes spat</div>
-      </div>
+    </div>
+
+    <!-- Name -->
+    <div class="name-banner">
+      <div class="name-text" id="nameText"></div>
+      <div class="name-label">gre danes spat</div>
     </div>
 
     <!-- Stars -->
