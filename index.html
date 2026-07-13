@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Kdo me da spat?</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .image-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .name-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px 20px 20px;
+      text-align: center;
+      font-size: clamp(48px, 10vw, 80px);
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      background: linear-gradient(transparent, rgba(0,0,0,0.4));
+    }
+
+    .name-overlay.tati {
+      color: #4da6ff;
+    }
+
+    .name-overlay.mami {
+      color: #ff6b9d;
+    }
+
+    .stars-section {
+      background: #16213e;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      border-top: 2px solid #0f3460;
+    }
+
+    .stars-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .stars-display .star-icon {
+      font-size: 36px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .star-btn {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      color: #1a1a2e;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 28px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .star-btn:active {
+      transform: scale(0.93);
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+    }
+
+    .star-btn:disabled {
+      opacity: 0.4;
+      transform: none;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffd700;
+      color: #1a1a2e;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 18px;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .message.show {
+      opacity: 1;
+    }
+
+    .install-banner {
+      background: #0f3460;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .install-banner.show {
+      display: block;
+    }
+
+    .day-indicator {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="image-container" id="imageContainer">
+      <img id="personImage" src="" alt="">
+      <div class="name-overlay" id="nameOverlay"></div>
+      <div class="day-indicator" id="dayIndicator"></div>
+    </div>
+
+    <div class="stars-section">
+      <div class="stars-display">
+        <span class="star-icon">⭐</span>
+        <span id="starCount">0</span>
+      </div>
+      <button class="star-btn" id="starBtn">
+        ⭐ Zvezdica!
+      </button>
+    </div>
+  </div>
+
+  <div class="message" id="message"></div>
+  <div class="install-banner" id="installBanner" onclick="installApp()">
+    📲 Namesti aplikacijo na telefon
+  </div>
+
+  <script>
+    // --- DATA ---
+    const REFERENCE_DATE = '2026-07-13'; // Today = Tati
+    const REFERENCE_IS_TATI = true;
+
+    const images = {
+      tati: 'tati.jpg',
+      mami: 'mami.jpg'
+    };
+
+    // --- STATE ---
+    let deferredPrompt = null;
+
+    // --- LOGIC ---
+    function getWhoseTurn() {
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      const ref = new Date(REFERENCE_DATE + 'T00:00:00');
+      const now = new Date(todayStr + 'T00:00:00');
+      const diffDays = Math.floor((now - ref) / (1000 * 60 * 60 * 24));
+      
+      // Even diff = same as reference (Tati), Odd diff = opposite (Mami)
+      const isTati = (diffDays % 2 === 0) === REFERENCE_IS_TATI;
+      return isTati ? 'tati' : 'mami';
+    }
+
+    function getStars() {
+      try {
+        return parseInt(localStorage.getItem('spalnica_stars') || '0', 10);
+      } catch { return 0; }
+    }
+
+    function setStars(n) {
+      localStorage.setItem('spalnica_stars', String(n));
+    }
+
+    function getStarDate() {
+      return localStorage.getItem('spalnica_star_date') || '';
+    }
+
+    function setStarDate(date) {
+      localStorage.setItem('spalnica_star_date', date);
+    }
+
+    function canCollectStar() {
+      const today = new Date().toISOString().split('T')[0];
+      return getStarDate() !== today;
+    }
+
+    function collectStar() {
+      if (!canCollectStar()) return false;
+      const today = new Date().toISOString().split('T')[0];
+      setStars(getStars() + 1);
+      setStarDate(today);
+      return true;
+    }
+
+    // --- RENDER ---
+    function render() {
+      const turn = getWhoseTurn();
+      const stars = getStars();
+      const today = new Date().toISOString().split('T')[0];
+
+      // Image
+      document.getElementById('personImage').src = images[turn];
+      
+      // Name overlay
+      const overlay = document.getElementById('nameOverlay');
+      overlay.className = 'name-overlay ' + turn;
+      overlay.textContent = turn === 'tati' ? 'Tati' : 'Mami';
+
+      // Day indicator
+      const days = ['Nedelja','Ponedeljek','Torek','Sreda','Četrtek','Petek','Sobota'];
+      const months = ['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec'];
+      const d = new Date();
+      document.getElementById('dayIndicator').textContent = 
+        days[d.getDay()] + ', ' + d.getDate() + '. ' + months[d.getMonth()] + '.';
+
+      // Stars
+      document.getElementById('starCount').textContent = stars;
+
+      // Star button
+      const btn = document.getElementById('starBtn');
+      if (canCollectStar()) {
+        btn.disabled = false;
+        btn.textContent = '⭐ Zvezdica!';
+        btn.style.opacity = '1';
+      } else {
+        btn.disabled = true;
+        btn.textContent = '✅ Že zbrano';
+        btn.style.opacity = '0.4';
+      }
+
+      // Theme color
+      const themeColor = turn === 'tati' ? '#1a3a5c' : '#5c1a3a';
+      document.querySelector('meta[name="theme-color"]').content = themeColor;
+      document.body.style.background = turn === 'tati' ? '#0a1628' : '#280a16';
+      document.querySelector('.stars-section').style.background = turn === 'tati' ? '#0d1f3c' : '#3c0d1f';
+      document.querySelector('.stars-section').style.borderTopColor = turn === 'tati' ? '#1a3a5c' : '#5c1a3a';
+    }
+
+    function showMessage(text) {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 2000);
+    }
+
+    // --- EVENTS ---
+    document.getElementById('starBtn').addEventListener('click', () => {
+      if (collectStar()) {
+        render();
+        showMessage('⭐ Bravo! Zvezdica je tvoja! 🌟');
+        // Confetti effect for kids
+        createConfetti();
+      }
+    });
+
+    function createConfetti() {
+      const colors = ['#ffd700', '#ff6b9d', '#4da6ff', '#ffaa00', '#00ff88', '#ff4444'];
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.style.cssText = `
+            position: fixed;
+            top: -10px;
+            left: ${Math.random() * 100}%;
+            width: ${6 + Math.random() * 10}px;
+            height: ${6 + Math.random() * 10}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+            z-index: 999;
+            pointer-events: none;
+            animation: fall ${1.5 + Math.random() * 2}s ease-in forwards;
+            transform: rotate(${Math.random() * 360}deg);
+          `;
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 3500);
+        }, i * 30);
+      }
+    }
+
+    // Add confetti animation
+    const confettiStyle = document.createElement('style');
+    confettiStyle.textContent = `
+      @keyframes fall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(confettiStyle);
+
+    // --- PWA INSTALL ---
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBanner').classList.add('show');
+      // Hide after 5 seconds
+      setTimeout(() => {
+        document.getElementById('installBanner').classList.remove('show');
+      }, 5000);
+    });
+
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((result) => {
+          if (result.outcome === 'accepted') {
+            document.getElementById('installBanner').classList.remove('show');
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+
+    window.installApp = installApp;
+
+    // --- INIT ---
+    render();
+
+    // Re-render at midnight
+    const now = new Date();
+    const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
+    setTimeout(() => {
+      render();
+      setInterval(render, 24 * 60 * 60 * 1000);
+    }, msUntilMidnight + 1000);
+
+    // --- SERVICE WORKER ---
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
