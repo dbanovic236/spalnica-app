@@ -2,8 +2,10 @@
 <html lang="sl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0f0f1a">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0d1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Kdo me da spat?</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
@@ -12,271 +14,320 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-      --bg-tati: #0a0e1a;
-      --bg-mami: #1a0a14;
-      --gold: #fbbf24;
-      --gold-light: #fde68a;
-    }
-
     html, body {
       height: 100%;
       width: 100%;
       overflow: hidden;
       font-family: 'Fredoka', -apple-system, sans-serif;
-      background: var(--bg-tati);
-      transition: background 0.8s ease;
+      background: #0d0d1a;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
     }
 
-    body.mami-theme { background: var(--bg-mami); }
+    body.mami-theme { background: #1a0d16; }
 
+    /* ── App Shell ── */
     .app {
       height: 100%;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
-    /* ── Image Stage ── */
-    .image-stage {
-      flex: 1;
+    /* ── Photo Section ── */
+    .photo-section {
+      flex: 0 0 50%;
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
     }
 
-    .image-stage img {
+    .photo-section img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.7s ease;
     }
 
-    .image-stage img.switching { opacity: 0; }
+    .photo-section img.switching { opacity: 0.3; }
 
-    .image-stage::after {
-      content: '';
+    .photo-gradient {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.5) 85%, rgba(0,0,0,0.85) 100%);
+      background: linear-gradient(180deg,
+        rgba(0,0,0,0.05) 0%,
+        transparent 20%,
+        transparent 60%,
+        rgba(0,0,0,0.55) 90%,
+        rgba(0,0,0,0.9) 100%
+      );
       pointer-events: none;
+      z-index: 1;
     }
 
-    .image-stage::before {
-      content: '';
+    .name-overlay {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(0deg, transparent 90%, rgba(0,0,0,0.12) 100%);
-      pointer-events: none;
-    }
-
-    /* ── Name Badge ── */
-    .name-badge {
-      position: absolute;
-      bottom: 12%;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 2;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 40px 24px 24px;
       text-align: center;
+      z-index: 2;
     }
 
     .name-text {
-      font-size: clamp(56px, 14vw, 96px);
+      font-size: clamp(52px, 13vw, 88px);
       font-weight: 700;
-      letter-spacing: 1px;
       line-height: 1;
-      transition: color 0.6s ease;
-      filter: drop-shadow(0 8px 28px rgba(0,0,0,0.55));
+      letter-spacing: -0.5px;
+      filter: drop-shadow(0 8px 32px rgba(0,0,0,0.6));
+      transition: color 0.7s ease;
     }
 
-    .name-text.tati { color: #bfdbfe; }
-    .name-text.mami { color: #fbcfe8; }
+    .name-text.tati { color: #8bb9fe; }
+    .name-text.mami { color: #f5a8d0; }
 
-    .name-subtitle {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.42);
-      margin-top: 2px;
-    }
-
-    /* ── Date Pill ── */
-    .date-pill {
-      position: absolute;
-      top: max(16px, env(safe-area-inset-top, 16px));
-      right: 16px;
-      z-index: 2;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: rgba(255,255,255,0.75);
-      padding: 8px 16px;
-      border-radius: 100px;
+    .name-label {
       font-size: 12px;
       font-weight: 500;
-      border: 1px solid rgba(255,255,255,0.06);
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
     }
 
-    /* ── Bottom Sheet ── */
-    .bottom-sheet {
-      position: relative;
-      background: rgba(12, 12, 28, 0.96);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 22px 20px max(22px, env(safe-area-inset-bottom, 22px));
-      z-index: 3;
-      transition: background 0.6s ease;
-    }
-
-    body.mami-theme .bottom-sheet {
-      background: rgba(26, 10, 22, 0.96);
-    }
-
-    /* ── Star Jar ── */
-    .star-jar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-      min-height: 28px;
-    }
-
-    .star-jar svg {
-      width: 20px;
-      height: 20px;
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-    }
-
-    .star-jar svg path { fill: #fbbf24; }
-
-    @keyframes popIn {
-      0% { transform: scale(0) rotate(-30deg); opacity: 0; }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-
-    .star-jar .empty-state {
-      color: rgba(255,255,255,0.12);
-      font-size: 13px;
+    .date-pill {
+      position: absolute;
+      top: max(12px, env(safe-area-inset-top, 12px));
+      right: 12px;
+      z-index: 2;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(255,255,255,0.7);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 11px;
       font-weight: 500;
     }
 
-    /* ── Star Counter ── */
-    .star-counter {
+    /* ── Stars Section ── */
+    .stars-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #111122;
+      transition: background 0.7s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.mami-theme .stars-section { background: #22111c; }
+
+    .stars-header {
+      padding: 20px 24px 8px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 16px;
+      justify-content: space-between;
     }
 
-    .star-counter .big-star {
-      width: 36px;
-      height: 36px;
+    .stars-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
-    .star-counter .big-star path { fill: #fbbf24; }
+    .stars-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    .star-counter .count {
-      font-size: 44px;
+    .stars-count {
+      font-size: 18px;
       font-weight: 700;
-      color: var(--gold);
-      min-width: 50px;
-      text-align: center;
-      transition: transform 0.3s ease;
+      color: #fbbf24;
     }
 
-    .star-counter .count.bump {
-      animation: countBump 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes countBump {
-      0% { transform: scale(1); }
-      40% { transform: scale(1.45); }
-      100% { transform: scale(1); }
-    }
-
-    .star-counter .streak-badge {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #0f0f1a;
+    .streak-chip {
+      background: rgba(251,191,36,0.12);
+      color: #fbbf24;
       font-size: 11px;
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 100px;
       letter-spacing: 0.5px;
+      display: none;
     }
 
-    /* ── Collect Button ── */
+    .streak-chip.show { display: block; }
+
+    /* ── Star Grid ── */
+    .star-grid-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 20px 16px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .star-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 4px 0;
+    }
+
+    .star-card {
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .star-card svg {
+      width: 48%;
+      height: 48%;
+      transition: transform 0.3s ease;
+    }
+
+    .star-card svg path { fill: #fbbf24; }
+
+    .star-card.earned {
+      background: rgba(251,191,36,0.06);
+      border-color: rgba(251,191,36,0.15);
+    }
+
+    .star-card.earned svg path {
+      fill: url(#starGold);
+    }
+
+    .star-card.new-star {
+      animation: starAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @keyframes starAppear {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      60% { transform: scale(1.15) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .star-card .star-date {
+      position: absolute;
+      bottom: 6px;
+      font-size: 8px;
+      color: rgba(255,255,255,0.25);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .star-card.pending {
+      background: rgba(255,255,255,0.015);
+    }
+
+    .star-card.pending svg path {
+      fill: rgba(255,255,255,0.06);
+    }
+
+    /* ── Empty State ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 32px 16px;
+      color: rgba(255,255,255,0.15);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 52px;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    .empty-state .empty-text {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    /* ── Bottom Bar ── */
+    .bottom-bar {
+      padding: 14px 20px max(16px, env(safe-area-inset-bottom, 16px));
+      background: rgba(17,17,34,0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.7s ease;
+    }
+
+    body.mami-theme .bottom-bar { background: rgba(34,17,28,0.98); }
+
     .collect-btn {
       width: 100%;
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #1a1400;
+      color: #1a1200;
       border: none;
-      border-radius: 18px;
+      border-radius: 16px;
       padding: 16px;
       font-family: 'Fredoka', sans-serif;
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 6px 24px rgba(251, 191, 36, 0.18);
+      box-shadow: 0 4px 20px rgba(251,191,36,0.15);
       transition: all 0.2s ease;
-      letter-spacing: 0.5px;
     }
 
     .collect-btn:active {
       transform: scale(0.96);
-      box-shadow: 0 3px 12px rgba(251, 191, 36, 0.12);
+      box-shadow: 0 2px 10px rgba(251,191,36,0.1);
     }
 
     .collect-btn:disabled {
       background: rgba(255,255,255,0.04);
-      color: rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.15);
       box-shadow: none;
       cursor: default;
       transform: none;
     }
 
-    .collect-btn .btn-star {
-      width: 24px;
-      height: 24px;
+    .collect-btn .btn-icon {
+      width: 22px;
+      height: 22px;
     }
 
-    .collect-btn .btn-star path { fill: #1a1400; }
-
-    .collect-btn:disabled .btn-star path { fill: rgba(255,255,255,0.18); }
+    .collect-btn .btn-icon path { fill: currentColor; }
 
     /* ── Toast ── */
     .toast {
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      background: rgba(0,0,0,0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      transform: translate(-50%, -50%) scale(0.85);
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       color: #fbbf24;
-      padding: 22px 36px;
+      padding: 24px 36px;
       border-radius: 24px;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       z-index: 100;
       pointer-events: none;
       opacity: 0;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       text-align: center;
-      border: 1px solid rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251,191,36,0.1);
     }
 
     .toast.show {
@@ -284,10 +335,13 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
-    .toast .toast-emoji {
-      font-size: 52px;
-      display: block;
-      margin-bottom: 6px;
+    .toast-emoji { font-size: 48px; display: block; margin-bottom: 6px; }
+
+    /* ── Confetti ── */
+    .confetti-piece {
+      position: fixed;
+      z-index: 999;
+      pointer-events: none;
     }
 
     /* ── Install Banner ── */
@@ -296,57 +350,66 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, #1e293b, #334155);
+      background: #1e293b;
       color: white;
       text-align: center;
-      padding: 14px;
+      padding: 12px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       z-index: 50;
       display: none;
-      border-top: 1px solid rgba(255,255,255,0.08);
     }
-
     .install-banner.show { display: block; }
-
-    /* ── Confetti ── */
-    .confetti-piece {
-      position: fixed;
-      z-index: 999;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
 
-  <!-- Hidden SVG star icon -->
-  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-    <symbol id="star-icon" viewBox="0 0 24 24">
-      <path d="M12 2l2.8 6.6L22 9.5l-5 5.4 1.2 7.1-6.2-3.6-6.2 3.6L7 14.9l-5-5.4 7.2-.9L12 2z"/>
-    </symbol>
+  <svg style="position:absolute;width:0;height:0" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="starGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#fbbf24"/>
+        <stop offset="50%" style="stop-color:#f59e0b"/>
+        <stop offset="100%" style="stop-color:#d97706"/>
+      </linearGradient>
+      <symbol id="star" viewBox="0 0 24 24">
+        <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"/>
+      </symbol>
+    </defs>
   </svg>
 
   <div class="app">
-    <div class="image-stage" id="imageStage">
+    <!-- Photo -->
+    <div class="photo-section">
       <img id="personImage" src="" alt="">
+      <div class="photo-gradient"></div>
       <div class="date-pill" id="datePill"></div>
-      <div class="name-badge">
+      <div class="name-overlay">
         <div class="name-text" id="nameText"></div>
-        <div class="name-subtitle">GRE DANES spat</div>
+        <div class="name-label">gre danes spat</div>
       </div>
     </div>
 
-    <div class="bottom-sheet">
-      <div class="star-jar" id="starJar"></div>
-      <div class="star-counter">
-        <svg class="big-star"><use href="#star-icon"/></svg>
-        <span class="count" id="countDisplay">0</span>
-        <span class="streak-badge" id="streakBadge" style="display:none">🔥 0</span>
+    <!-- Stars -->
+    <div class="stars-section">
+      <div class="stars-header">
+        <span class="stars-title">Zvezdice</span>
+        <div class="stars-meta">
+          <span class="streak-chip" id="streakChip">🔥 0</span>
+          <span class="stars-count" id="starsTotal">0</span>
+        </div>
       </div>
-      <button class="collect-btn" id="collectBtn">
-        <svg class="btn-star"><use href="#star-icon"/></svg> Zvezdica!
-      </button>
+
+      <div class="star-grid-scroll" id="starScroll">
+        <div class="star-grid" id="starGrid"></div>
+      </div>
+
+      <div class="bottom-bar">
+        <button class="collect-btn" id="collectBtn">
+          <svg class="btn-icon"><use href="#star"/></svg>
+          Zvezdica!
+        </button>
+      </div>
     </div>
   </div>
 
@@ -356,101 +419,59 @@
   </div>
 
   <script>
-    const REFERENCE_DATE = '2026-07-13';
-    const REFERENCE_IS_TATI = true;
-    const MAX_VISIBLE_STARS = 20;
+    const REF = { date: '2026-07-13', isTati: true };
+    const GRID_COLS = 4;
     const images = { tati: 'tati.jpg', mami: 'mami.jpg' };
     let deferredPrompt = null;
 
-    function getWhoseTurn() {
-      const today = new Date().toISOString().split('T')[0];
-      const ref = new Date(REFERENCE_DATE + 'T00:00:00');
-      const now = new Date(today + 'T00:00:00');
-      const diffDays = Math.floor((now - ref) / (1000 * 60 * 60 * 24));
-      return ((diffDays % 2 === 0) === REFERENCE_IS_TATI) ? 'tati' : 'mami';
+    // ── State ──
+    function whoseTurn() {
+      const t = new Date().toISOString().split('T')[0];
+      const d = Math.floor((new Date(t) - new Date(REF.date)) / 86400000);
+      return ((d % 2 === 0) === REF.isTati) ? 'tati' : 'mami';
     }
 
-    function getStars() {
-      try { return parseInt(localStorage.getItem('spalnica_stars') || '0', 10); }
-      catch { return 0; }
-    }
-
-    function setStars(n) { localStorage.setItem('spalnica_stars', String(n)); }
-
-    function getStarDates() {
+    function loadDates() {
       try { return JSON.parse(localStorage.getItem('spalnica_star_dates') || '[]'); }
       catch { return []; }
     }
 
-    function addStarDate(date) {
-      const dates = getStarDates();
-      if (!dates.includes(date)) {
-        dates.push(date);
-        localStorage.setItem('spalnica_star_dates', JSON.stringify(dates));
-      }
+    function saveDates(d) { localStorage.setItem('spalnica_star_dates', JSON.stringify(d)); }
+
+    function canCollect() {
+      return !loadDates().includes(new Date().toISOString().split('T')[0]);
     }
 
-    function canCollectStar() {
-      return !getStarDates().includes(new Date().toISOString().split('T')[0]);
-    }
-
-    function getStreak() {
-      const dates = getStarDates().sort().reverse();
-      if (dates.length === 0) return 0;
-      const today = new Date().toISOString().split('T')[0];
-      let streak = 0;
-      const check = new Date(today + 'T00:00:00');
-      if (!dates.includes(today)) check.setDate(check.getDate() - 1);
-      while (dates.includes(check.toISOString().split('T')[0])) {
-        streak++;
-        check.setDate(check.getDate() - 1);
-      }
-      return streak;
-    }
-
-    function collectStar() {
-      if (!canCollectStar()) return false;
-      setStars(getStars() + 1);
-      addStarDate(new Date().toISOString().split('T')[0]);
+    function addStar() {
+      if (!canCollect()) return false;
+      const dates = loadDates();
+      dates.push(new Date().toISOString().split('T')[0]);
+      saveDates(dates);
       return true;
     }
 
-    function spawnConfetti() {
-      const colors = ['#fbbf24','#f59e0b','#fcd34d','#fde68a','#60a5fa','#93c5fd','#f472b6','#f9a8d4','#34d399','#a78bfa','#fb923c','#ffffff'];
-      for (let i = 0; i < 55; i++) {
-        setTimeout(() => {
-          const el = document.createElement('div');
-          el.className = 'confetti-piece';
-          const size = 6 + Math.random() * 12;
-          el.style.cssText = [
-            'top:-20px', 'left:' + Math.random() * 100 + '%',
-            'width:' + size + 'px', 'height:' + size + 'px',
-            'background:' + colors[Math.floor(Math.random() * colors.length)],
-            'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
-            'animation:confettiFall ' + (2 + Math.random() * 3) + 's ease-in ' + (Math.random() * 0.5) + 's forwards',
-            'transform:rotate(' + (Math.random() * 360) + 'deg)'
-          ].join(';');
-          document.body.appendChild(el);
-          setTimeout(() => el.remove(), 4000);
-        }, i * 22);
-      }
+    function getStreak() {
+      const dates = loadDates().sort().reverse();
+      if (!dates.length) return 0;
+      const today = new Date().toISOString().split('T')[0];
+      let s = 0;
+      const c = new Date(today + 'T00:00:00');
+      if (!dates.includes(today)) c.setDate(c.getDate() - 1);
+      while (dates.includes(c.toISOString().split('T')[0])) { s++; c.setDate(c.getDate() - 1); }
+      return s;
     }
 
-    function showToast(emoji, text) {
-      const t = document.getElementById('toast');
-      t.innerHTML = '<span class="toast-emoji">' + emoji + '</span>' + text;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
-    }
-
+    // ── Render ──
     function render() {
-      const turn = getWhoseTurn();
-      const stars = getStars();
+      const turn = whoseTurn();
+      const dates = loadDates();
       const streak = getStreak();
-      const collected = !canCollectStar();
+      const collected = !canCollect();
 
+      // Theme
       document.body.className = turn === 'mami' ? 'mami-theme' : '';
 
+      // Photo
       const img = document.getElementById('personImage');
       if (img.dataset.current !== turn) {
         img.classList.add('switching');
@@ -458,109 +479,176 @@
           img.src = images[turn];
           img.classList.remove('switching');
           img.dataset.current = turn;
-        }, 300);
+        }, 350);
       } else if (!img.src.includes(images[turn])) {
         img.src = images[turn];
         img.dataset.current = turn;
       }
 
-      const nameEl = document.getElementById('nameText');
-      nameEl.className = 'name-text ' + turn;
-      nameEl.textContent = turn === 'tati' ? 'Tati' : 'Mami';
+      // Name
+      const n = document.getElementById('nameText');
+      n.className = 'name-text ' + turn;
+      n.textContent = turn === 'tati' ? 'Tati' : 'Mami';
 
+      // Date pill
       const days = ['Nedelja','Ponedeljek','Torek','Sreda','Četrtek','Petek','Sobota'];
-      const months = ['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec'];
+      const mos = ['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec'];
       const d = new Date();
-      document.getElementById('datePill').textContent = days[d.getDay()] + ', ' + d.getDate() + '. ' + months[d.getMonth()] + '.';
+      document.getElementById('datePill').textContent =
+        days[d.getDay()] + ', ' + d.getDate() + '. ' + mos[d.getMonth()] + '.';
 
-      const jar = document.getElementById('starJar');
-      const visible = Math.min(stars, MAX_VISIBLE_STARS);
-      if (visible > 0) {
-        jar.innerHTML = Array.from({length: visible}, (_, i) =>
-          '<svg style="animation-delay:' + (i * 0.03) + 's"><use href="#star-icon"/></svg>'
-        ).join('');
-        if (stars > MAX_VISIBLE_STARS) {
-          jar.innerHTML += '<span style="color:rgba(255,255,255,0.25);font-size:13px;font-weight:600">+' + (stars - MAX_VISIBLE_STARS) + '</span>';
-        }
-      } else {
-        jar.innerHTML = '<span class="empty-state">Še ni zvezdic. Pojdi lepo spat!</span>';
+      // Star grid
+      const grid = document.getElementById('starGrid');
+      const totalSlots = Math.max(dates.length + 3, 8); // Show at least 8 slots, +3 preview
+      const rounded = Math.ceil(totalSlots / GRID_COLS) * GRID_COLS;
+
+      let html = '';
+      for (let i = 0; i < rounded; i++) {
+        const earned = i < dates.length;
+        const cls = earned ? 'star-card earned' : 'star-card pending';
+        const dateLabel = earned
+          ? dates[i].slice(5).replace('-', '/')
+          : '';
+        html += '<div class="' + cls + '">' +
+          '<svg><use href="#star"/></svg>' +
+          (dateLabel ? '<span class="star-date">' + dateLabel + '</span>' : '') +
+          '</div>';
       }
 
-      document.getElementById('countDisplay').textContent = stars;
+      if (dates.length === 0) {
+        html = '<div class="empty-state">' +
+          '<div class="empty-icon">🌙</div>' +
+          '<div class="empty-text">Še nobene zvezdice.<br>Pojdi lepo spat in pritisni gumb!</div>' +
+          '</div>';
+      }
 
-      const badge = document.getElementById('streakBadge');
+      grid.innerHTML = html;
+
+      // Mark newest star for animation
+      if (dates.length > 0 && window._justCollected) {
+        const cards = grid.querySelectorAll('.star-card.earned');
+        if (cards.length) cards[cards.length - 1].classList.add('new-star');
+        window._justCollected = false;
+      }
+
+      // Header
+      document.getElementById('starsTotal').textContent = dates.length;
+
+      const sc = document.getElementById('streakChip');
       if (streak >= 3) {
-        badge.style.display = 'inline';
-        badge.textContent = '🔥 ' + streak;
+        sc.classList.add('show');
+        sc.textContent = '🔥 ' + streak;
       } else {
-        badge.style.display = 'none';
+        sc.classList.remove('show');
       }
 
+      // Button
       const btn = document.getElementById('collectBtn');
       if (collected) {
         btn.disabled = true;
-        btn.innerHTML = '<span style="font-size:20px">✅</span> Že zbrana zvezdica';
+        btn.innerHTML = '<span style="font-size:18px">✓</span> Že zbrana';
       } else {
         btn.disabled = false;
-        btn.innerHTML = '<svg class="btn-star"><use href="#star-icon"/></svg> Zvezdica!';
+        btn.innerHTML = '<svg class="btn-icon"><use href="#star"/></svg> Zvezdica!';
       }
 
-      document.querySelector('meta[name="theme-color"]').content = turn === 'tati' ? '#0a0e1a' : '#1a0a14';
+      // Meta theme
+      document.querySelector('meta[name="theme-color"]').content =
+        turn === 'tati' ? '#0d0d1a' : '#1a0d16';
     }
 
-    function collectAndRender() {
-      if (!collectStar()) return;
-      document.getElementById('countDisplay').classList.add('bump');
-      setTimeout(() => document.getElementById('countDisplay').classList.remove('bump'), 400);
+    // ── Collect ──
+    function doCollect() {
+      if (!addStar()) return;
+      window._justCollected = true;
       render();
+
+      // Scroll to new star
+      const scroll = document.getElementById('starScroll');
+      setTimeout(() => scroll.scrollTop = scroll.scrollHeight, 200);
+
+      // Confetti
       spawnConfetti();
+
+      // Toast
       const streak = getStreak();
-      if (streak >= 7) {
-        showToast('👑', 'Cel teden! Kralj zvezdic!');
-      } else {
-        const msgs = [
-          ['🌟', 'Bravo! Zvezdica je tvoja!'],
-          ['🎉', 'Odlično! Kar tako naprej!'],
-          ['💫', 'Super! Si pravi zvezdni junak!'],
-          ['✨', 'Čestitke! Nova zvezdica!'],
-          ['🏆', 'Fenomenalno! Zvezde se nabirajo!']
-        ];
-        const m = msgs[Math.floor(Math.random() * msgs.length)];
+      if (streak >= 7) showToast('👑', 'Cel teden! Kralj zvezdic!');
+      else {
+        const m = [
+          ['🌟','Bravo! Zvezdica je tvoja!'],
+          ['🎉','Odlično! Kar tako naprej!'],
+          ['💫','Super! Si pravi zvezdni junak!'],
+          ['✨','Čestitke! Nova zvezdica!'],
+          ['🏆','Fenomenalno! Zvezde se nabirajo!']
+        ][Math.floor(Math.random() * 5)];
         showToast(m[0], m[1]);
       }
     }
 
-    document.getElementById('collectBtn').addEventListener('click', collectAndRender);
+    document.getElementById('collectBtn').addEventListener('click', doCollect);
 
-    window.addEventListener('beforeinstallprompt', (e) => {
+    // ── Confetti ──
+    function spawnConfetti() {
+      const colors = ['#fbbf24','#f59e0b','#fcd34d','#60a5fa','#f472b6','#34d399','#a78bfa','#fff'];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'confetti-piece';
+          const s = 6 + Math.random() * 12;
+          el.style.cssText = [
+            'top:-20px','left:'+Math.random()*100+'%',
+            'width:'+s+'px','height:'+s+'px',
+            'background:'+colors[~~(Math.random()*colors.length)],
+            'border-radius:'+(Math.random()>.5?'50%':'2px'),
+            'animation:cf '+(2+Math.random()*3)+'s ease-in '+(Math.random()*.5)+'s forwards',
+            'transform:rotate('+(Math.random()*360)+'deg)'
+          ].join(';');
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 4000);
+        }, i * 20);
+      }
+    }
+
+    // ── Toast ──
+    function showToast(emoji, text) {
+      const t = document.getElementById('toast');
+      t.innerHTML = '<span class="toast-emoji">'+emoji+'</span>'+text;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2400);
+    }
+
+    // ── PWA ──
+    window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('installBanner').classList.add('show');
-      setTimeout(() => document.getElementById('installBanner').classList.remove('show'), 6000);
+      const b = document.getElementById('installBanner');
+      b.classList.add('show');
+      setTimeout(() => b.classList.remove('show'), 5000);
     });
 
-    function installApp() {
+    window.installApp = () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(r => {
         if (r.outcome === 'accepted') document.getElementById('installBanner').classList.remove('show');
         deferredPrompt = null;
       });
-    }
-    window.installApp = installApp;
+    };
 
+    // ── Midnight ──
     function scheduleMidnight() {
-      const now = new Date();
-      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-      setTimeout(() => { render(); scheduleMidnight(); }, midnight.getTime() - now.getTime() + 500);
+      const n = new Date();
+      const m = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1);
+      setTimeout(() => { render(); scheduleMidnight(); }, m - n + 500);
     }
 
+    // ── Init ──
     render();
     scheduleMidnight();
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
     const ss = document.createElement('style');
-    ss.textContent = '@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}70%{opacity:1}100%{transform:translateY(105vh) rotate(720deg) scale(0.4);opacity:0}}';
+    ss.textContent = '@keyframes cf{0%{transform:translateY(0) rotate(0) scale(1);opacity:1}70%{opacity:1}100%{transform:translateY(105vh) rotate(720deg) scale(.3);opacity:0}}';
     document.head.appendChild(ss);
   </script>
 </body>
