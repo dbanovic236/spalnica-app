@@ -234,6 +234,62 @@
       fill: rgba(255,255,255,0.06);
     }
 
+    /* ── Reward Card ── */
+    .reward-card {
+      aspect-ratio: 1;
+      background: rgba(251,191,36,0.12);
+      border: 2px solid rgba(251,191,36,0.45);
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 12px;
+      animation: rewardPulse 2.5s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    .reward-card:active {
+      transform: scale(0.9);
+    }
+
+    .reward-card svg {
+      width: 58%;
+      height: 58%;
+      color: #fbbf24;
+      filter: drop-shadow(0 0 14px rgba(251,191,36,0.5));
+    }
+
+    .reward-card .reward-date {
+      font-size: 9px;
+      color: rgba(251,191,36,0.7);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .reward-card .reward-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fbbf24;
+      letter-spacing: 0.5px;
+    }
+
+    .reward-card.new-reward svg {
+      animation: rewardAppear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @keyframes rewardPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(251,191,36,0.15); }
+      50% { box-shadow: 0 0 22px rgba(251,191,36,0.35); }
+    }
+
+    @keyframes rewardAppear {
+      0% { transform: scale(0) rotate(-60deg); opacity: 0; }
+      50% { transform: scale(1.2) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
     /* ── Empty State ── */
     .empty-state {
       grid-column: 1 / -1;
@@ -370,6 +426,11 @@
     <symbol id="star" viewBox="0 0 24 24">
       <path fill="currentColor" d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"/>
     </symbol>
+    <symbol id="gift" viewBox="0 0 24 24">
+      <rect x="2" y="9" width="20" height="13" rx="2" fill="currentColor"/>
+      <rect x="1" y="6" width="22" height="4" rx="1" fill="currentColor" opacity="0.9"/>
+      <path d="M12 6v16M8 6c-1.5-2 0-5 4-2 4-3 5.5 0 4 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
   </svg>
 
   <div class="app">
@@ -499,11 +560,23 @@
       const rounded = Math.ceil(totalSlots / GRID_COLS) * GRID_COLS;
 
       let html = '';
+      const hasReward = dates.length >= 10;
       for (let i = 0; i < rounded; i++) {
-        const earned = i < dates.length;
+        // Position 10 reserved for reward card
+        if (hasReward && i === 9) {
+          html += '<div class="reward-card" id="rewardCard">' +
+            '<svg><use href="#gift" fill="#fbbf24"/></svg>' +
+            '<span class="reward-label">Darilo!</span>' +
+            '<span class="reward-date">' + dates[9].slice(5).replace('-', '/') + '</span>' +
+            '</div>';
+          continue;
+        }
+        // Adjust index for slots after the reward card
+        const starIdx = hasReward && i > 9 ? i - 1 : i;
+        const earned = starIdx < dates.length;
         const cls = earned ? 'star-card earned' : 'star-card pending';
         const dateLabel = earned
-          ? dates[i].slice(5).replace('-', '/')
+          ? dates[starIdx].slice(5).replace('-', '/')
           : '';
         html += '<div class="' + cls + '">' +
           '<svg><use href="#star" fill="' + (earned ? '#fbbf24' : 'rgba(255,255,255,0.06)') + '"/></svg>' +
@@ -522,6 +595,10 @@
 
       // Mark newest star for animation
       if (dates.length > 0 && window._justCollected) {
+        if (dates.length === 10) {
+          const rc = document.getElementById('rewardCard');
+          if (rc) rc.classList.add('new-reward');
+        }
         const cards = grid.querySelectorAll('.star-card.earned');
         if (cards.length) cards[cards.length - 1].classList.add('new-star');
         window._justCollected = false;
@@ -568,7 +645,9 @@
 
       // Toast
       const streak = getStreak();
-      if (streak >= 7) showToast('👑', 'Cel teden! Kralj zvezdic!');
+      const dates = loadDates();
+      if (dates.length === 10) showToast('🎁', '10 zvezdic! Dobiš darilo!');
+      else if (streak >= 7) showToast('👑', 'Cel teden! Kralj zvezdic!');
       else {
         const m = [
           ['🌟','Bravo! Zvezdica je tvoja!'],
@@ -642,6 +721,14 @@
     render();
     scheduleMidnight();
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+
+    // Reward card tap handler
+    document.getElementById('starGrid').addEventListener('click', e => {
+      const card = e.target.closest('.reward-card');
+      if (!card) return;
+      spawnConfetti();
+      showToast('🎁', 'Bravo! Dobro jutri pojdi spat in spet dobiš darilo!');
+    });
 
     const ss = document.createElement('style');
     ss.textContent = '@keyframes cf{0%{transform:translateY(0) rotate(0) scale(1);opacity:1}70%{opacity:1}100%{transform:translateY(105vh) rotate(720deg) scale(.3);opacity:0}}';
