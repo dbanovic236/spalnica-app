@@ -176,8 +176,8 @@
 
     .star-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
       padding: 4px 0;
     }
 
@@ -194,20 +194,20 @@
     }
 
     .star-card svg {
-      width: 48%;
-      height: 48%;
+      width: 58%;
+      height: 58%;
       transition: transform 0.3s ease;
     }
 
-    .star-card svg path { fill: #fbbf24; }
+    .star-card svg path { fill: rgba(255,255,255,0.05); }
 
     .star-card.earned {
-      background: rgba(251,191,36,0.06);
-      border-color: rgba(251,191,36,0.15);
+      background: rgba(251,191,36,0.08);
+      border-color: rgba(251,191,36,0.2);
     }
 
     .star-card.earned svg path {
-      fill: url(#starGold);
+      fill: #fbbf24;
     }
 
     .star-card.new-star {
@@ -366,16 +366,9 @@
 <body>
 
   <svg style="position:absolute;width:0;height:0" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="starGold" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#fbbf24"/>
-        <stop offset="50%" style="stop-color:#f59e0b"/>
-        <stop offset="100%" style="stop-color:#d97706"/>
-      </linearGradient>
-      <symbol id="star" viewBox="0 0 24 24">
-        <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"/>
-      </symbol>
-    </defs>
+    <symbol id="star" viewBox="0 0 24 24">
+      <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"/>
+    </symbol>
   </svg>
 
   <div class="app">
@@ -420,7 +413,7 @@
 
   <script>
     const REF = { date: '2026-07-13', isTati: true };
-    const GRID_COLS = 4;
+    const GRID_COLS = 3;
     const images = { tati: 'tati.jpg', mami: 'mami.jpg' };
     let deferredPrompt = null;
 
